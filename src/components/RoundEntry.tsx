@@ -110,6 +110,7 @@ export default function RoundEntry({ players, onSubmit, editingRound, deckConfig
               max={roundPoints.totalPoints}
               value={scores[player.id] || 0}
               onChange={(e) => handleScoreChange(player.id, Number(e.target.value))}
+              onFocus={(e) => e.target.select()}
               className="w-full bg-gray-700 rounded p-2"
             />
           </div>
