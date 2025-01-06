@@ -1,4 +1,4 @@
-import { GameState, Round, Player } from '../types';
+import { GameState } from '../types';
 import { recalculateTotalScores } from './roundUtils';
 import { saveGameState } from './storage';
 
@@ -9,10 +9,12 @@ export const deleteRound = (
   const newRounds = gameState.rounds.filter(r => r.roundNumber !== roundNumber);
   const updatedPlayers = recalculateTotalScores(gameState.players, newRounds);
   
+  const reindexedRounds = newRounds.map((round, index) => ({ ...round, roundNumber: index + 1 }));
+
   const newGameState = {
     ...gameState,
     players: updatedPlayers,
-    rounds: newRounds,
+    rounds: reindexedRounds,
   };
 
   saveGameState(newGameState);

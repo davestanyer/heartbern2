@@ -1,24 +1,16 @@
-import React from 'react';
-import { Pencil, Trash2 } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
+import { Round } from '../types';
 
 interface RoundActionsProps {
-  roundNumber: number;
-  onEdit: (roundNumber: number) => void;
-  onDelete: (roundNumber: number) => void;
+  round: Round;
+  onDelete: (round: Round) => void;
 }
 
-export default function RoundActions({ roundNumber, onEdit, onDelete }: RoundActionsProps) {
+export default function RoundActions({ round, onDelete }: RoundActionsProps) {
   return (
     <div className="flex gap-2">
       <button
-        onClick={() => onEdit(roundNumber)}
-        className="p-1 hover:bg-gray-700 rounded transition-colors"
-        title="Edit round"
-      >
-        <Pencil className="w-4 h-4" />
-      </button>
-      <button
-        onClick={() => onDelete(roundNumber)}
+        onClick={() => onDelete(round)}
         className="p-1 hover:bg-red-700 rounded transition-colors"
         title="Delete round"
       >

@@ -1,15 +1,13 @@
-import React from 'react';
 import { Round, Player } from '../types';
 import RoundActions from './RoundActions';
 
 interface RoundHistoryProps {
   rounds: Round[];
   players: Player[];
-  onEditRound: (roundNumber: number) => void;
-  onDeleteRound: (roundNumber: number) => void;
+  onDeleteRound: (round: Round) => void;
 }
 
-export default function RoundHistory({ rounds, players, onEditRound, onDeleteRound }: RoundHistoryProps) {
+export default function RoundHistory({ rounds, players, onDeleteRound }: RoundHistoryProps) {
   return (
     <div className="bg-gray-800 rounded-lg p-4">
       <h2 className="text-xl font-bold mb-4">Round History</h2>
@@ -26,7 +24,7 @@ export default function RoundHistory({ rounds, players, onEditRound, onDeleteRou
           </thead>
           <tbody>
             {rounds.map((round) => (
-              <tr key={round.roundNumber} className="border-t border-gray-700">
+              <tr key={round.roundId} className="border-t border-gray-700">
                 <td className="p-2">{round.roundNumber}</td>
                 {players.map((player) => (
                   <td key={player.id} className="p-2">
@@ -35,8 +33,7 @@ export default function RoundHistory({ rounds, players, onEditRound, onDeleteRou
                 ))}
                 <td className="p-2">
                   <RoundActions
-                    roundNumber={round.roundNumber}
-                    onEdit={onEditRound}
+                    round={round}
                     onDelete={onDeleteRound}
                   />
                 </td>

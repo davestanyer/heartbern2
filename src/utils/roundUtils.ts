@@ -1,4 +1,4 @@
-import { Round, Player, RoundScore } from '../types';
+import { Round, Player } from '../types';
 
 export const getHighestScoringPlayer = (round: Round, players: Player[]): Player | null => {
   if (!round.scores.length) return null;

@@ -15,7 +15,6 @@ import { deleteRound } from './utils/roundManagement';
 export default function App() {
   const [gameState, setGameState] = useState<GameState | null>(null);
   const [showGameOver, setShowGameOver] = useState(false);
-  const [editingRound, setEditingRound] = useState<Round | null>(null);
   const [showAnimation, setShowAnimation] = useState(false);
   const [highestScoringPlayer, setHighestScoringPlayer] = useState<Player | null>(null);
 
@@ -48,14 +47,13 @@ export default function App() {
     clearGameData();
     setGameState(null);
     setShowGameOver(false);
-    setEditingRound(null);
     setShowAnimation(false);
     setHighestScoringPlayer(null);
   };
 
-  const handleDeleteRound = (roundNumber: number) => {
+  const handleDeleteRound = (round: Round) => {
     if (!gameState) return;
-    const newGameState = deleteRound(gameState, roundNumber);
+    const newGameState = deleteRound(gameState, round.roundNumber);
     setGameState(newGameState);
   };
 
@@ -63,20 +61,14 @@ export default function App() {
     if (!gameState) return;
 
     const newRound: Round = {
-      roundNumber: editingRound?.roundNumber || gameState.rounds.length + 1,
+      roundId: uuidv4(),
+      roundNumber: gameState.rounds.length + 1,
       scores: roundScores,
       timestamp: new Date().toISOString(),
     };
 
-    let newRounds: Round[];
-    if (editingRound) {
-      newRounds = gameState.rounds.map(r => 
-        r.roundNumber === editingRound.roundNumber ? newRound : r
-      );
-    } else {
-      newRounds = [...gameState.rounds, newRound];
-    }
-
+    const newRounds = [...gameState.rounds, newRound];
+    
     const updatedPlayers = recalculateTotalScores(gameState.players, newRounds);
     
     const newGameState = {
@@ -88,16 +80,12 @@ export default function App() {
     setGameState(newGameState);
     saveGameState(newGameState);
 
-    if (!editingRound) {
-      const highestScorer = getHighestScoringPlayer(newRound, updatedPlayers);
-      if (highestScorer) {
-        setHighestScoringPlayer(highestScorer);
-        setShowAnimation(true);
-      }
+    const highestScorer = getHighestScoringPlayer(newRound, updatedPlayers);
+    if (highestScorer) {
+      setHighestScoringPlayer(highestScorer);
+      setShowAnimation(true);
     }
-
-    setEditingRound(null);
-
+    
     if (isGameOver(updatedPlayers, gameState.endGameTarget)) {
       setShowGameOver(true);
     }
@@ -129,14 +117,12 @@ export default function App() {
             <RoundEntry 
               players={gameState.players} 
               onSubmit={handleRoundSubmit}
-              editingRound={editingRound}
               deckConfig={gameState.deckConfig}
             />
           </div>
           <RoundHistory 
             rounds={gameState.rounds} 
             players={gameState.players}
-            onEditRound={setEditingRound}
             onDeleteRound={handleDeleteRound}
           />
         </div>
@@ -145,7 +131,7 @@ export default function App() {
           <GameOver winner={getWinner(gameState.players)} onRestart={handleRestart} />
         )}
 
-        {!editingRound && showAnimation && (
+        {showAnimation && (
           <ScoreAnimation
             playerName={highestScoringPlayer?.name || ''}
             show={showAnimation}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Player, Round, DeckConfiguration } from '../types';
+import { Player, DeckConfiguration } from '../types';
 import { calculateRoundPoints } from '../utils/deckScoring';
 import { getRemainingPoints } from '../utils/scoreValidation';
 import ShootMoonButton from './ShootMoonButton';
@@ -8,11 +8,10 @@ import ScoreSlider from './ScoreSlider'; // Import the new ScoreSlider component
 interface RoundEntryProps {
   players: Player[];
   onSubmit: (scores: { playerId: string; roundScore: number }[]) => void;
-  editingRound: Round | null;
   deckConfig: DeckConfiguration;
 }
 
-export default function RoundEntry({ players, onSubmit, editingRound, deckConfig }: RoundEntryProps) {
+export default function RoundEntry({ players, onSubmit, deckConfig }: RoundEntryProps) {
   const [scores, setScores] = useState<{ [key: string]: number }>(
     Object.fromEntries(players.map(p => [p.id, 0]))
   );
@@ -20,15 +19,8 @@ export default function RoundEntry({ players, onSubmit, editingRound, deckConfig
   const roundPoints = calculateRoundPoints(deckConfig);
 
   useEffect(() => {
-    if (editingRound?.scores) {
-      const editScores = Object.fromEntries(
-        editingRound.scores.map(score => [score.playerId, score.roundScore])
-      );
-      setScores(editScores);
-    } else {
-      setScores(Object.fromEntries(players.map(p => [p.id, 0])));
-    }
-  }, [editingRound, players]);
+    setScores(Object.fromEntries(players.map(p => [p.id, 0])));
+  }, [players]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,9 +30,8 @@ export default function RoundEntry({ players, onSubmit, editingRound, deckConfig
     }));
     onSubmit(roundScores);
 
-    if (!editingRound) {
-      setScores(Object.fromEntries(players.map(p => [p.id, 0])));
-    }
+    setScores(Object.fromEntries(players.map(p => [p.id, 0])));
+    
   };
 
   const handleScoreChange = (playerId: string, value: number) => {
@@ -81,12 +72,10 @@ export default function RoundEntry({ players, onSubmit, editingRound, deckConfig
   return (
     <form
       onSubmit={handleSubmit}
-      className={`rounded-lg p-4 mt-6 ${
-        editingRound ? 'bg-blue-900/50' : 'bg-gray-800'
-      }`}
+      className={`rounded-lg p-4 mt-6 bg-gray-800`}
     >
       <h2 className="text-xl font-bold mb-4">
-        {editingRound ? `Edit Round ${editingRound.roundNumber}` : 'Enter Round Scores'}
+        Enter Round Scores
       </h2>
 
       <div className="mb-4 p-4 bg-gray-700 rounded-lg">
@@ -112,7 +101,7 @@ export default function RoundEntry({ players, onSubmit, editingRound, deckConfig
         ))}
       </div>
 
-      {!editingRound && hasPlayerWithAllPoints ? (
+      {hasPlayerWithAllPoints ? (
         <ShootMoonButton onShootMoon={handleShootMoon} />
       ) : (
         <button
@@ -120,7 +109,7 @@ export default function RoundEntry({ players, onSubmit, editingRound, deckConfig
           className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
           disabled={remainingPoints !== 0} // Disable until points are distributed
         >
-          {editingRound ? 'Update Round' : 'Submit Round'}
+          Submit Round
         </button>
       )}
     </form>

@@ -10,6 +10,7 @@ export interface RoundScore {
 }
 
 export interface Round {
+  roundId: string;
   roundNumber: number;
   scores: RoundScore[];
   timestamp: string;

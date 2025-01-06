@@ -1,5 +1,5 @@
-import { RoundScore, DeckConfiguration } from '../types';
-import { calculateRoundPoints, RoundPoints } from './deckScoring';
+import { RoundScore } from '../types';
+import { RoundPoints } from './deckScoring';
 
 export const calculateTotalPoints = (scores: RoundScore[]): number => {
   return scores.reduce((sum, score) => sum + score.roundScore, 0);
