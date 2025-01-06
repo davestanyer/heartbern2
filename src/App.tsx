@@ -11,12 +11,31 @@ import { saveGameState, loadGameState, clearGameData } from './utils/storage';
 import { isGameOver, getWinner } from './utils/gameLogic';
 import { getHighestScoringPlayer, recalculateTotalScores } from './utils/roundUtils';
 import { deleteRound } from './utils/roundManagement';
+import ConfirmResetModal from './components/ConfirmResetModal';
 
 export default function App() {
   const [gameState, setGameState] = useState<GameState | null>(null);
   const [showGameOver, setShowGameOver] = useState(false);
   const [showAnimation, setShowAnimation] = useState(false);
   const [highestScoringPlayer, setHighestScoringPlayer] = useState<Player | null>(null);
+  const [showResetModal, setShowResetModal] = useState(false);
+
+  const handleRestart = () => {
+    setShowResetModal(true);
+  };
+
+  const confirmReset = () => {
+    clearGameData();
+    setGameState(null);
+    setShowGameOver(false);
+    setShowAnimation(false);
+    setHighestScoringPlayer(null);
+    setShowResetModal(false); // Close modal after reset
+  };
+
+  const cancelReset = () => {
+    setShowResetModal(false);
+  };
 
   useEffect(() => {
     const savedState = loadGameState();
@@ -41,14 +60,6 @@ export default function App() {
     };
     setGameState(newGameState);
     saveGameState(newGameState);
-  };
-
-  const handleRestart = () => {
-    clearGameData();
-    setGameState(null);
-    setShowGameOver(false);
-    setShowAnimation(false);
-    setHighestScoringPlayer(null);
   };
 
   const handleDeleteRound = (round: Round) => {
@@ -106,6 +117,12 @@ export default function App() {
           >
             Reset Game
           </button>
+          {showResetModal && (
+          <ConfirmResetModal
+            onConfirm={confirmReset}
+            onCancel={cancelReset}
+          />
+      )}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
