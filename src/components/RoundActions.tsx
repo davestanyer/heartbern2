@@ -13,6 +13,7 @@ export default function RoundActions({ round, onDelete }: RoundActionsProps) {
         onClick={() => onDelete(round)}
         className="p-1 hover:bg-red-700 rounded transition-colors"
         title="Delete round"
+        aria-label={`Delete round ${round.roundNumber}`}
       >
         <Trash2 className="w-4 h-4" />
       </button>

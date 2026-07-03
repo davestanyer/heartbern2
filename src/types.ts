@@ -36,3 +36,17 @@ export interface GameSettings {
   useDoubleDeck: boolean;
   deckConfig: DeckConfiguration;
 }
+
+export interface SavedGameSetup {
+  settings: GameSettings;
+  playerNames: string[];
+}
+
+export interface CompletedGame {
+  id: string;
+  endedAt: string;
+  endGameTarget: number;
+  roundsPlayed: number;
+  winnerName: string;
+  standings: { name: string; totalScore: number }[];
+}
