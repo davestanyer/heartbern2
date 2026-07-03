@@ -23,7 +23,7 @@ A fast, friendly score keeper for the **Hearts** card game — built for phones 
 
 ## Getting started
 
-Requires Node 18+ (see `.nvmrc`).
+Requires Node 20+ (see `.nvmrc`).
 
 ```bash
 npm install
